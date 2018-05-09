@@ -12,7 +12,7 @@ def dprint(string):
         print(string)
 
 class WebServer(object):
-    def __init__(self, application, host="127.0.0.1", port=9090):
+    def __init__(self, application, host="127.0.0.1", port=9091):
         self.host = host
         self.port = port
         self.addr = (host, port)
@@ -27,6 +27,8 @@ class WebServer(object):
         self.version = None
         self.header_info = {}
         self.app = application
+        self.environ = {}
+        self.request_data = None
 
     def server_forever(self):
         self.sock.listen(100)
@@ -43,13 +45,21 @@ class WebServer(object):
         header = LineDelimiter.join(lines)+Delimiter
         self.csock.sendall(header.encode('utf-8'))
 
+    def build_environ(self):
+        self.environ['method'] = self.method
+        self.environ['url'] = self.url
+        self.environ['version'] = self.version
+        self.environ['header'] = self.header_info
+        self.environ['data'] = self.request_data
+
     def handle_connect(self, csock, caddr):
         self.csock = csock
         self.caddr = caddr
         header = self.get_request_header()
         print(header)
         self.parse_header(header)
-        response_list = self.app(self.header_info, self.start_response)
+        self.build_environ()
+        response_list = self.app(self.environ, self.start_response)
         for response in response_list:
             self.csock.sendall(response)
         self.csock.close()
