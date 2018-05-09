@@ -21,7 +21,10 @@ class WebFramework(object):
             print('url is invalid')
         elif callback is None:
             print('url is statics')
-            self.response_data = open('statics'+src_path).read()
+            if src_path=='/' or src_path=='index.html':
+                self.response_data = open('index.html').read()
+            else:
+                self.response_data = open('statics'+src_path).read()
         else:
             print('url is dynamic')
             self.response_data = callback(src_path, environ['data'])
