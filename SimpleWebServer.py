@@ -1,6 +1,7 @@
 import os, sys
 import socket
 import errno
+from multiprocessing import Process
 
 LineDelimiter = "\r\n"
 Delimiter = "\r\n\r\n"
@@ -11,7 +12,7 @@ def dprint(string):
         print(string)
 
 class WebServer(object):
-    def __init__(self, host="127.0.0.1", port=9090):
+    def __init__(self, application, host="127.0.0.1", port=9090):
         self.host = host
         self.port = port
         self.addr = (host, port)
@@ -25,17 +26,33 @@ class WebServer(object):
         self.url = None
         self.version = None
         self.header_info = {}
+        self.app = application
 
     def server_forever(self):
         self.sock.listen(100)
         while True:
             self.csock, self.caddr = self.sock.accept()
-            header = self.get_request_header()
-            print(header)
-            self.parse_header(header)
-            response = self.build_response("helloworld")
-            self.csock.sendall(response)
+            Process(target = self.handle_connect, args = (self.csock, self.caddr)).start()
             self.csock.close()
+    
+    def start_response(self, status, header_info):
+        first_line = "%s %s" % (self.version, status)
+        lines = [first_line, ]
+        for header_tuple in header_info:
+            lines.append(header_tuple[0]+': '+header_tuple[1])
+        header = LineDelimiter.join(lines)+Delimiter
+        self.csock.sendall(header.encode('utf-8'))
+
+    def handle_connect(self, csock, caddr):
+        self.csock = csock
+        self.caddr = caddr
+        header = self.get_request_header()
+        print(header)
+        self.parse_header(header)
+        response_list = self.app(self.header_info, self.start_response)
+        for response in response_list:
+            self.csock.sendall(response)
+        self.csock.close()
 
     def get_request_header(self):
         while not Delimiter in self.request:
@@ -76,8 +93,14 @@ class WebServer(object):
 
         return response.encode()
 
+def simple_app(environ, start_response):
+    response_body = 'HelloWorld'.encode('utf-8')
+    start_response("200 OK", [('Content-Type', 'text/plain'), ('Content-Length', str(len(response_body)))])
+
+    return [response_body]
+
 def main():
-    server = WebServer()
+    server = WebServer(simple_app)
     server.server_forever()
 
 if __name__ == '__main__':
