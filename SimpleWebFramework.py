@@ -21,10 +21,7 @@ class WebFramework(object):
             print('url is invalid')
         elif callback is None:
             print('url is statics')
-            if src_path=='/' or src_path=='index.html':
-                self.response_data = open('index.html').read()
-            else:
-                self.response_data = open('statics'+src_path).read()
+            self.response_data = open(src_path).read()
         else:
             print('url is dynamic')
             self.response_data = callback(src_path, environ['data'])
@@ -52,7 +49,12 @@ class Router(object):
         self.dynamic_routes = []
         self.all_routes = []
         self.current_route = None
+        self._base_path = '.'
     
+    def base_path(self, path_str):
+        self._base_path = path_str
+        return self._base_path
+
     def route(self, route_str, callback=None):
         if callable is None:
             self.static_routes.append(route_str)
@@ -61,21 +63,30 @@ class Router(object):
         
         self.all_routes.append(route_str)
         self.route_callbacks[route_str] = callback
+
+    def get_full_route(self, url_path):
+        if url_path=='/' or url_path=='/index.html':
+            return './index.html'
+
+        if self.route_callbacks[url_path] is None:
+            return self._base_path + '/statics' + url_path
+
+        return self._base_path + url_path
     
     def switch(self, url_path):
         route = url_path
         print(route)
         if route == '/':
-            return '/', None
+            return self.get_full_route('/'), None
 
         if route in self.all_routes:
-            return route, self.route_callbacks[route]
+            return self.get_full_route(route), self.route_callbacks[route]
         
         while len(route) > 1:
             route = '/'.join(route.split('/')[:-1])
             print(route)
             if route in self.static_routes:
-                return url_path, None
+                return self.get_full_route(url_path), None
         
         return None, None
 
