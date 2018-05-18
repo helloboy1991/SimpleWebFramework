@@ -95,6 +95,8 @@ class WebServer(object):
         first_line = "%s %d %s" % (self.version, code, desc)
         content_len = len(data)
         header_info['Content-Length'] = str(content_len)
+        if 'Content-Type' not in header_info:
+            header_info['Content-Type'] = 'text/html; charset=utf-8'
         lines = [first_line, ]
         for key in header_info:
             lines.append(key + ': ' + header_info[key])
