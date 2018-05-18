@@ -21,7 +21,7 @@ class WebFramework(object):
             print('url is invalid')
         elif callback is None:
             print('url is statics')
-            self.response_data = open(src_path).read()
+            self.response_data = open(src_path, encoding=CODE).read()
         else:
             print('url is dynamic')
             self.response_data = callback(src_path, environ['data'])
@@ -41,6 +41,7 @@ class WebFramework(object):
         if len(self.response_body_segments) == 1:
             body_len = len(self.response_body_segments[0])
             self.response_header_info.append(('Content-Length', str(body_len)))
+            self.response_header_info.append(('Content-Type', 'text/html; charset=utf-8'))
 
 class Router(object):
     def __init__(self):
@@ -50,26 +51,31 @@ class Router(object):
         self.all_routes = []
         self.current_route = None
         self._base_path = '.'
+
+        self.route('/statics')
     
     def base_path(self, path_str):
         self._base_path = path_str
         return self._base_path
 
     def route(self, route_str, callback=None):
-        if callable is None:
+        if callback is None:
             self.static_routes.append(route_str)
+            print("add new static route")
         else:
             self.dynamic_routes.append(route_str)
+            print("add new dynamic route")
         
         self.all_routes.append(route_str)
         self.route_callbacks[route_str] = callback
 
-    def get_full_route(self, url_path):
+    def get_full_route(self, route, url_path=None):
+        url_path = url_path or route
         if url_path=='/' or url_path=='/index.html':
             return './index.html'
 
-        if self.route_callbacks[url_path] is None:
-            return self._base_path + '/statics' + url_path
+        if self.route_callbacks[route] is None:
+            return self._base_path + url_path
 
         return self._base_path + url_path
     
@@ -85,8 +91,10 @@ class Router(object):
         while len(route) > 1:
             route = '/'.join(route.split('/')[:-1])
             print(route)
+            print(self.static_routes)
             if route in self.static_routes:
-                return self.get_full_route(url_path), None
+                print('route found in static')
+                return self.get_full_route(route, url_path), None
         
         return None, None
 
