@@ -28,7 +28,7 @@ class WebServer(object):
         self.header_info = {}
         self.app = application
         self.environ = {}
-        self.request_data = None
+        self.request_data = ''
 
     def server_forever(self):
         self.sock.listen(100)
@@ -51,18 +51,44 @@ class WebServer(object):
         self.environ['version'] = self.version
         self.environ['header'] = self.header_info
         self.environ['data'] = self.request_data
+        self.environ['addr'] = self.caddr
 
     def handle_connect(self, csock, caddr):
         self.csock = csock
         self.caddr = caddr
-        header = self.get_request_header()
-        print(header)
-        self.parse_header(header)
-        self.build_environ()
-        response_list = self.app(self.environ, self.start_response)
-        for response in response_list:
-            self.csock.sendall(response)
-        self.csock.close()
+        try:
+            header = self.get_request_header()
+            print(header)
+            self.parse_header(header)
+            if self.method == 'post':
+                self.get_request_data()
+            print(self.request_data)
+        except:
+            pass
+        else:
+            self.build_environ()
+            response_list = self.app(self.environ, self.start_response)
+            for response in response_list:
+                self.csock.sendall(response)
+            self.csock.close()
+
+    def get_request_data(self):
+        content_len = int(self.header_info['content-length'])
+        try:
+            self.request_data = str(self.request).split(Delimiter)[1]
+        except:
+            pass
+        while len(self.request_data) < content_len:
+            try:
+                recv_buff = self.csock.recv(10240)
+                if recv_buff is None or len(recv_buff)==0:
+                    break
+                self.request_data += recv_buff.decode()
+            except Exception as e:
+                print(e)
+                break
+        
+        return str(self.request_data)
 
     def get_request_header(self):
         while not Delimiter in self.request:
@@ -80,9 +106,15 @@ class WebServer(object):
     def parse_header(self, header):
         lines = header.split(LineDelimiter)
         first_line = lines[0]
+        print('first_line: ' + first_line)
         method, url, version = first_line.split(' ')
         self.method = method.strip().lower()
-        self.url = url.strip().lower()
+        self.url = url.strip().split('?', 1)[0]
+        try:
+            self.request_data = url.strip().split('?', 1)[1]
+        except:
+            pass
+        self.url = self.url.strip().lower()
         self.version = version.strip().lower()
         for line in lines[1:]:
             key, value = line.split(':', 1)

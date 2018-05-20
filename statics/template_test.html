@@ -1,0 +1,100 @@
+<style>
+    .base-tool-panel {
+        border-color: black;
+        border-style: dashed;
+        width: fit-content;
+        margin: 10px;
+        padding: 10px;
+        background-color: aliceblue;
+    };
+</style>
+
+<div class='tool-page-content'>
+    <div id='ybj-timezone-panel' class="base-tool-panel">
+        <div class="timezone-item">
+            <span class="timezone-item-name">北京时间</span>
+            <span class="timezone-item-time">12:00:00</span>
+        </div>
+        <div class="timezone-item">
+            <span class="timezone-item-name">纽约时间</span>
+            <span class="timezone-item-time">12:00:00</span>
+        </div>
+        <div class="timezone-item">
+            <span class="timezone-item-name">东京时间</span>
+            <span class="timezone-item-time">12:00:00</span>
+        </div>
+        <div class="timezone-item">
+            <span class="timezone-item-name">伦敦时间</span>
+            <span class="timezone-item-time">12:00:00</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .base-popup-window {
+        display: block;
+        width: 300px;
+        height: 200px;
+        background-color: whitesmoke;
+        margin: 5px;
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+    }
+    .popup-window-header {
+        background-color: lightblue;
+        height: auto;
+        padding: 3px;
+    }
+    .popup-window-content {
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+    .line-input {
+        margin-bottom: 10px;
+    }
+    .input-label {
+        width: 50px;
+        display: inline-block;
+    }
+    .line-input input {
+        width: 150px;
+    }
+    .line-button {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .line-button input {
+        margin-left: 5px;
+    }
+</style>
+
+<div class='base-popup-window'>
+    <div class="popup-window-header">
+        <span class="popup-window-title">登陆/注册</span>
+    </div>
+    <div class="popup-window-content">
+        <div>
+            <form method="GET">
+                <div class="line-input">
+                    <span class="input-label">用户名</span>
+                    <input type="text" name="username">
+                </div>
+                <div class="line-input">
+                    <span class="input-label">密 码</span>
+                        <input type="password" name="password">
+                </div>
+                <div class="line-input">
+                    <span class="input-label">确 认</span>
+                        <input type="password">
+                </div>
+                <div class="line-button">
+                    <input type="button" name="clear" value="清空">
+                    <input type="submit" name="submit" value="提交">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

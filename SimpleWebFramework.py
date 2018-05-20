@@ -24,7 +24,7 @@ class WebFramework(object):
             self.response_data = open(src_path, encoding=CODE).read()
         else:
             print('url is dynamic')
-            self.response_data = callback(src_path, environ['data'])
+            self.response_header_info, self.response_data = callback(environ)
         
         self.build_response_segment()
         self.build_response_header()
