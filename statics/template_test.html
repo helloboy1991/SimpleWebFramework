@@ -98,3 +98,101 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .ybj-comment-panel {
+        margin-top: 20px; 
+        display: block;
+        width: 600px;
+        height: fit-content;
+        background-color: whitesmoke;
+    }
+    .edit-area {
+        display: block;
+    }
+    .ybj-comment-panel textarea {
+        width: 500px;
+        height: 100px;
+        margin: 5px;
+        padding: 5px;
+        font-size: large;
+        display: inline-block;
+    }
+    .edit-buttons {
+        display: inline-block;
+        height: 100px;
+        position: absolute;
+    }
+    .edit-button {
+        display: block;
+        width: 70px;
+        height: 30px;
+        margin: 5px;
+    }
+    .comment-content-area {
+        display: block;
+        margin: 5px;
+    }
+    .one-comment {
+        display: block;
+        margin-top: 10px;
+        width: 590px;
+        position: relative;
+    }
+    .comment-info, .comment-content {
+        display: block;
+        height: 30px;
+    }
+    .comment-info {
+        background-color: lightgreen;
+    }
+    .comment-user {
+        margin-left: 10px;
+    }
+    .comment-time {
+        position: absolute;
+        right: 5px;
+    }
+</style>
+
+<div class="ybj-comment-panel">
+    
+    <div class="edit-area">
+        <textarea>
+        </textarea>
+        <div class="edit-buttons">
+            <button class="edit-button">清空</button>
+            <button class="edit-button">提交</button>
+        </div>
+    </div>
+    <div class="comment-content-area">
+        <div class="one-comment">
+            <div class="comment-info">
+                <span class="comment-user">username</span>
+                <span class="comment-time">time</span>
+            </div>
+            <div class="comment-content">
+                <p>Nice to here!</p>
+            </div>
+        </div>
+        <div class="one-comment">
+            <div class="comment-info">
+                <span class="comment-user">username</span>
+                <span class="comment-time">time</span>
+            </div>
+            <div class="comment-content">
+                <p>Nice to here!</p>
+            </div>
+        </div>
+        <div class="one-comment">
+            <div class="comment-info">
+                <span class="comment-user">username</span>
+                <span class="comment-time">time</span>
+            </div>
+            <div class="comment-content">
+                <p>Nice to here!</p>
+            </div>
+        </div>
+    </div>
+</div>
