@@ -25,9 +25,13 @@ class Comment(Base):
     __tablename__ = 'comments'
 
     commentid = Column(Integer, primary_key=True)
-    userid = Column(Integer)
-    createdate = Column(DateTime)
-    comment = Column(String)
+    username = Column(String)
+    createddate = Column(String)
+    content = Column(String)
+
+    def __repr__(self):
+        return "<Comment(username='%s', createddate='%s', content='%s')>" % (
+                 self.username, self.createddate, self.content)
 
 def main():
     engine = create_engine('sqlite:///../firstDB.db')

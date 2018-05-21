@@ -1,7 +1,7 @@
 var load_home_content = function() {
     var ComponentName = "HomeContent";
     var ComponentId = "#ybj-content";
-    var SubComponents = [];
+    var SubComponents = ['#ybj-comment-panel'];
 
     var Metadata = {
         height: '800px',
@@ -10,8 +10,7 @@ var load_home_content = function() {
 
     var local_template = `
         <div class='home-page-content'>
-            <h2></h2>
-            <p></p>
+            <div id='ybj-comment-panel'></div>
         </div>
     `;
 
@@ -56,4 +55,5 @@ var load_home_content = function() {
     $root.append(render());
 
     // load_popup_window({});
+    load_comment_panel();
 }
