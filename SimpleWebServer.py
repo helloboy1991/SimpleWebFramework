@@ -78,7 +78,7 @@ class WebServer(object):
             self.request_data = str(self.request).split(Delimiter)[1]
         except:
             pass
-        while len(self.request_data) < content_len:
+        while len(self.request_data.encode()) < content_len:
             try:
                 recv_buff = self.csock.recv(10240)
                 if recv_buff is None or len(recv_buff)==0:

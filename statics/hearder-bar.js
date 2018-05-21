@@ -91,7 +91,8 @@
             var cookies = {};
             cookie_pears.forEach((cookie_pear) => {
                 var key_value = cookie_pear.split('=');
-                cookies[key_value[0].trim()] = key_value[1].trim();
+                if (key_value.length == 2)
+                    cookies[key_value[0].trim()] = key_value[1].trim();
             });
 
             if (cookies['username']) {

@@ -4,7 +4,7 @@ from SimpleWebFramework import WebFramework
 from SimpleWebServer import WebServer
 
 from DBscripts import init_db
-from DBscripts import register, login
+from DBscripts import register, login, update_comment
 
 def main():
     app = WebFramework()
@@ -12,6 +12,7 @@ def main():
     # app.router.route('/test.js')
     app.router.route('/register', register.execute)
     app.router.route('/login', login.execute)
+    app.router.route('/comment', update_comment.execute)
     app_server = WebServer(app)
     app_server.server_forever()
 
