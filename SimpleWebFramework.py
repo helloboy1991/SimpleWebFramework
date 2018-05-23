@@ -12,6 +12,7 @@ class WebFramework(object):
         self.response_body_segments = []
         self.response_data = 'HelloWorld'
         self.router = Router()
+        self.is_text = True
     
     def __call__(self, environ, start_response):
         print('call wsgi')
@@ -21,7 +22,18 @@ class WebFramework(object):
             print('url is invalid')
         elif callback is None:
             print('url is statics')
-            self.response_data = open(src_path, encoding=CODE).read()
+            text_files_suffix = ['html', 'htm', 'js', 'css']
+            try:
+                file_type = src_path.split('.')[-1]
+                if file_type in text_files_suffix:
+                    print('request file is text file')
+                    self.response_data = open(src_path, encoding=CODE).read()
+                else:
+                    self.is_text = False
+                    print('request file in not text file')
+                    self.response_data = open(src_path, mode='rb').read()
+            except Exception as e:
+                print(e)
         else:
             print('url is dynamic')
             self.response_header_info, self.response_data = callback(environ)
@@ -35,13 +47,17 @@ class WebFramework(object):
             yield response_body_segment
     
     def build_response_segment(self):
-        self.response_body_segments = [self.response_data.encode(CODE)]
+        if self.is_text:
+            self.response_body_segments = [self.response_data.encode(CODE)]
+        else:
+            self.response_body_segments = [self.response_data]
 
     def build_response_header(self):
         if len(self.response_body_segments) == 1:
             body_len = len(self.response_body_segments[0])
             self.response_header_info.append(('Content-Length', str(body_len)))
-            self.response_header_info.append(('Content-Type', 'text/html; charset=utf-8'))
+            if (self.is_text):
+                self.response_header_info.append(('Content-Type', 'text/html; charset=utf-8'))
 
 class Router(object):
     def __init__(self):
